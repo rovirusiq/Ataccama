@@ -1,0 +1,317 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<purity-config xmlns:comm="http://www.ataccama.com/purity/comment" version="9.0.2.ga-2015-02-02">
+	<references/>
+	<component-mappings>
+		<propertyMappings/>
+	</component-mappings>
+
+<!-- (Jdbc Reader) --><step id="Jdbc Reader" className="com.ataccama.dqc.tasks.io.jdbc.read.JdbcReader" disabled="false" mode="NORMAL">
+		<properties dataSourceName="DWH-DEV">
+			<columns>
+				<jdbcReaderColumn name="in_type" src="IN_TYPE" type="STRING"/>
+				<jdbcReaderColumn name="in_party_dwh_id" src="IN_PARTY_DWH_ID" type="LONG"/>
+				<jdbcReaderColumn name="in_party_sb_id" src="IN_PARTY_SB_ID" type="STRING"/>
+				<jdbcReaderColumn name="in_acc_dw_id" src="IN_ACC_DW_ID" type="LONG"/>
+				<jdbcReaderColumn name="in_acc_sb_id" src="IN_ACC_SB_ID" type="STRING"/>
+				<jdbcReaderColumn name="in_object_dwh_id" src="IN_OBJECT_DWH_ID" type="LONG"/>
+				<jdbcReaderColumn name="in_object_sb_id" src="IN_OBJECT_SB_ID" type="STRING"/>
+				<jdbcReaderColumn name="in_insert_process_id" src="IN_INSERT_PROCESS_ID" type="LONG"/>
+				<jdbcReaderColumn name="in_update_process_id" src="IN_UPDATE_PROCESS_ID" type="LONG"/>
+				<jdbcReaderColumn name="in_source_systme_id" src="IN_SOURCE_SYSTME_ID" type="STRING"/>
+				<jdbcReaderColumn name="in_company_code" src="IN_COMPANY_CODE" type="STRING"/>
+				<jdbcReaderColumn name="in_text" src="IN_TEXT" type="STRING"/>
+				<jdbcReaderColumn name="in_text1" src="IN_TEXT1" type="STRING"/>
+				<jdbcReaderColumn name="in_text2" src="IN_TEXT2" type="STRING"/>
+				<jdbcReaderColumn name="in_text3" src="IN_TEXT3" type="STRING"/>
+				<jdbcReaderColumn name="in_text4" src="IN_TEXT4" type="STRING"/>
+				<jdbcReaderColumn name="in_text5" src="IN_TEXT5" type="STRING"/>
+				<jdbcReaderColumn name="in_date" src="IN_DATE" type="DATETIME"/>
+				<jdbcReaderColumn name="in_date1" src="IN_DATE1" type="DATETIME"/>
+				<jdbcReaderColumn name="in_date2" src="IN_DATE2" type="DATETIME"/>
+				<jdbcReaderColumn name="in_date3" src="IN_DATE3" type="DATETIME"/>
+				<jdbcReaderColumn name="in_date4" src="IN_DATE4" type="DATETIME"/>
+				<jdbcReaderColumn name="in_date5" src="IN_DATE5" type="DATETIME"/>
+				<jdbcReaderColumn name="in_number" src="IN_NUMBER" type="FLOAT"/>
+				<jdbcReaderColumn name="in_number1" src="IN_NUMBER1" type="FLOAT"/>
+				<jdbcReaderColumn name="in_number2" src="IN_NUMBER2" type="FLOAT"/>
+				<jdbcReaderColumn name="in_number3" src="IN_NUMBER3" type="FLOAT"/>
+				<jdbcReaderColumn name="in_number4" src="IN_NUMBER4" type="FLOAT"/>
+				<jdbcReaderColumn name="in_number5" src="IN_NUMBER5" type="FLOAT"/>
+			</columns>
+			<queryString>select info_type_code as in_type,pt_key as in_party_dwh_id, pt_source_id as in_party_sb_id, acc_key as in_acc_dw_id, acc_source_id as in_acc_sb_id, object_key as in_object_dwh_id,object_id as in_object_sb_id
+,indsb_insert_process_key as in_insert_process_id,indsb_update_process_key as in_update_process_id,source_system_id as in_source_systme_id,comp_source_code as in_company_code
+,indicator_text_value as in_text
+,indicator_text1_value as in_text1
+,indicator_text2_value as in_text2
+,indicator_text3_value as in_text3
+,indicator_text4_value as in_text4
+,indicator_text5_value as in_text5
+,indicator_date_value as in_date
+,indicator_date1_value as in_date1
+,indicator_date2_value as in_date2
+,indicator_date3_value as in_date3
+,indicator_date4_value as in_date4
+,indicator_date5_value as in_date5
+,indicator_number_value as in_number
+,indicator_number1_value as in_number1
+,indicator_number2_value as in_number2
+,indicator_number3_value as in_number3
+,indicator_number4_value as in_number4
+,indicator_number5_value as in_number5
+from out_owner.out_sb_indicators</queryString>
+			<shadowColumns/>
+		</properties>
+		<visual-constraints bounds="336,48,-1,-1" layout="vertical"/>
+	</step>
+	<connection className="com.ataccama.dqc.model.elements.connections.StandardFlowConnection" disabled="false">
+		<source step="Jdbc Reader" endpoint="out"/>
+		<target step="Profiling" endpoint="inIndicators"/>
+		<visual-constraints>
+			<bendpoints/>
+		</visual-constraints>
+	</connection>
+
+
+
+<!-- (Jdbc Reader 2) --><step id="Jdbc Reader 2" className="com.ataccama.dqc.tasks.io.jdbc.read.JdbcReader" disabled="false" mode="NORMAL">
+		<properties queryString="select t.info_type_code from out_owner.out_sb_indicator_types t" dataSourceName="DWH-DEV">
+			<columns>
+				<jdbcReaderColumn name="in_lookup_type" src="INFO_TYPE_CODE" type="STRING"/>
+			</columns>
+			<shadowColumns/>
+		</properties>
+		<visual-constraints bounds="600,48,-1,-1" layout="vertical"/>
+	</step>
+	<connection className="com.ataccama.dqc.model.elements.connections.StandardFlowConnection" disabled="false">
+		<source step="Jdbc Reader 2" endpoint="out"/>
+		<target step="Profiling" endpoint="inLookup"/>
+		<visual-constraints>
+			<bendpoints/>
+		</visual-constraints>
+	</connection>
+
+
+
+<!-- (Profiling) --><step id="Profiling" className="com.ataccama.dqc.tasks.profiling.ProfilingAlgorithm" disabled="false" mode="NORMAL">
+		<properties defaultLocale="en_US" outputFile="pathvar://data-profile/profile-sb-indicators.profile" threaded="true" outputLimit="1000">
+			<domains>
+				<customs/>
+				<datetime active="true" threshold="80"/>
+				<enum active="true" valueCountLimit="20"/>
+				<numeric active="true" threshold="80"/>
+				<pattern patternCountLimit="10" active="true"/>
+				<specval gradientThreshold="100" active="true"/>
+			</domains>
+			<fkAnalysis>
+				<fkAnalysis rightInputName="inLookup" name="indicator_type" leftInputName="inIndicators">
+					<components>
+						<fkComponent leftColumn="in_type" rightColumn="in_lookup_type">
+							<comm:comment>in tabela asa par ca sunt</comm:comment>
+						</fkComponent>
+					</components>
+				</fkAnalysis>
+			</fkAnalysis>
+			<inputs>
+				<profilingInput name="inIndicators" drillThrough="false">
+					<businessRules>
+						<businessRule name="check-fatca-cli-dormant">
+							<expression>isFatcaIndicator:=(in_type=&#39;FATCA_CLI_DORMANT&#39;);
+isAllowedValue:=(in_text=&quot;Y&quot; or in_text=&quot;N&quot;);
+
+((NOT(isFatcaIndicator)) OR (isFatcaIndicator AND isAllowedValue))</expression>
+						</businessRule>
+					</businessRules>
+					<dataToProfile>
+						<profiledData expression="in_type" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_party_dwh_id" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_party_sb_id" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_acc_dw_id" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_acc_sb_id" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_object_sb_id" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_insert_process_id" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_update_process_id" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_source_systme_id" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_company_code" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_text" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_text1" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_text2" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_text3" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_text4" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_text5" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_date" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_date1" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_date2" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_date3" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_date4" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_date5" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_number" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_number1" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_number2" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_number3" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_number4" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+						<profiledData expression="in_number5" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+					</dataToProfile>
+					<dependencies/>
+					<pkAnalysis/>
+					<rollUps/>
+				</profilingInput>
+				<profilingInput name="inLookup" drillThrough="false">
+					<businessRules/>
+					<dataToProfile>
+						<profiledData expression="in_lookup_type" analyseDomain="true">
+							<frequencyAnalysis calculate="true"/>
+							<groupSizeAnalysis calculate="true"/>
+							<standardStats extremes="5" quantiles="10" calculate="true" calculateAggregated="true"/>
+						</profiledData>
+					</dataToProfile>
+					<dependencies/>
+					<pkAnalysis/>
+					<rollUps/>
+				</profilingInput>
+			</inputs>
+			<masks>
+				<maskCfg name="characters" copyOther="true">
+					<characterGroups>
+						<characterGroup symbol="L" characters="[:letter:]"/>
+						<characterGroup symbol="D" characters="[:digit:]"/>
+					</characterGroups>
+				</maskCfg>
+				<maskCfg name="words" copyOther="true">
+					<characterGroups>
+						<characterGroup repeatedThreshold="2" symbol="L" repeatedSymbol="W" characters="[:letter:]"/>
+						<characterGroup repeatedThreshold="2" symbol="D" repeatedSymbol="N" characters="[:digit:]"/>
+					</characterGroups>
+				</maskCfg>
+				<maskCfg name="case_sensitive" copyOther="true">
+					<characterGroups>
+						<characterGroup symbol="L" characters="[:lowercase:]"/>
+						<characterGroup symbol="U" characters="[:uppercase:]"/>
+						<characterGroup symbol="D" characters="[:digit:]"/>
+					</characterGroups>
+				</maskCfg>
+				<maskCfg name="mask_digits" copyOther="true">
+					<characterGroups>
+						<characterGroup symbol="D" characters="[:digit:]"/>
+					</characterGroups>
+				</maskCfg>
+			</masks>
+			<userMetadata>
+				<items/>
+			</userMetadata>
+		</properties>
+		<visual-constraints bounds="480,192,-1,-1" layout="vertical"/>
+	</step>
+
+</purity-config>
