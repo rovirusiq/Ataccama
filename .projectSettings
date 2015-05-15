@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<projectSettings>
+	<folderShortcuts>
+		<folderShortcut name="data" value="D:\Workspace\DQC\OUT-Tables\data"/>
+		<folderShortcut name="bin" value="D:\Workspace\DQC\OUT-Tables\bin"/>
+		<folderShortcut name="data-in" value="D:\Workspace\DQC\OUT-Tables\data\in"/>
+		<folderShortcut name="data-out" value="D:\Workspace\DQC\OUT-Tables\data\out"/>
+		<folderShortcut name="data-profile" value="D:\Workspace\DQC\OUT-Tables\data\pro"/>
+	</folderShortcuts>
+</projectSettings>
