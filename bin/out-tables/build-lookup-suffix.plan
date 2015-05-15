@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<purity-config version="9.0.2.ga-2015-02-02">
+	<references/>
+	<component-mappings>
+		<propertyMappings/>
+	</component-mappings>
+
+<!-- (Lookup Builder) --><step id="Lookup Builder" className="com.ataccama.dqc.tasks.builders.LookupBuilder" disabled="false" mode="NORMAL">
+		<properties approximativeIndex="false" compressed="false" duplicities="FIRST" bestDistanceIndex="false" fileName="pathvar://data/in/suffix-to-be-removed.lkp" bidirectApproximativeIndex="false" key="in_suffix">
+			<additionalColumns/>
+			<matchingValue doRemoveRepeatedChars="false" doSqueezeWS="false" doRemoveDia="false" doUpperCase="false"/>
+			<userMetadata>
+				<items/>
+			</userMetadata>
+		</properties>
+		<visual-constraints bounds="720,168,48,48" layout="vertical"/>
+	</step>
+
+
+
+<!-- (suffix-to-be-removed) --><step id="suffix-to-be-removed" className="com.ataccama.dqc.tasks.io.text.read.TextFileReader" disabled="false" mode="NORMAL">
+		<properties stringQualifier="" lineSeparator="\r\n" fieldSeparator=";" lineMaxReadLength="65536" numberOfLinesInHeader="0" fileName="pathvar://data/in/suffix-to-be-removed.txt" encoding="UTF-8" numberOfLinesInFooter="0" compression="NONE" stringQualifierEscape="">
+			<columns>
+				<textReaderColumn name="in_suffix" type="STRING" ignore="false"/>
+			</columns>
+			<dataFormatParameters trueValue="true" falseValue="false" thousandsSeparator="" dateFormatLocale="en_US" dateTimeFormat="yy-MM-dd HH:mm:ss" decimalSeparator="." dayFormat="yy-MM-dd"/>
+			<errorHandlingStrategy rejectFileName="rejected.txt">
+				<errorInstructions>
+					<errorInstruction putToLog="true" errorType="EXTRA_DATA" dataStrategy="READ_POSSIBLE" putToReject="false"/>
+					<errorInstruction putToLog="true" errorType="LONG_LINE" dataStrategy="STOP" putToReject="true"/>
+					<errorInstruction putToLog="true" errorType="PROCESSING_ERROR" dataStrategy="STOP" putToReject="false"/>
+					<errorInstruction putToLog="true" errorType="INVALID_DATE" dataStrategy="READ_POSSIBLE" putToReject="false"/>
+					<errorInstruction putToLog="true" errorType="SHORT_LINE" dataStrategy="READ_POSSIBLE" putToReject="true"/>
+					<errorInstruction putToLog="true" errorType="UNPARSABLE_FIELD" dataStrategy="NULL_VALUE" putToReject="false"/>
+				</errorInstructions>
+			</errorHandlingStrategy>
+			<shadowColumns/>
+		</properties>
+		<visual-constraints bounds="504,48,-1,-1" layout="vertical"/>
+	</step>
+	<connection className="com.ataccama.dqc.model.elements.connections.StandardFlowConnection" disabled="false">
+		<source step="suffix-to-be-removed" endpoint="out"/>
+		<target step="Lookup Builder" endpoint="in"/>
+		<visual-constraints>
+			<bendpoints/>
+		</visual-constraints>
+	</connection>
+
+</purity-config>
